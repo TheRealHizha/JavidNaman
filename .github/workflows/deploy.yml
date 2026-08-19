@@ -5,6 +5,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -19,7 +23,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.4'
+          flutter-version: '3.22.0'
           channel: 'stable'
           cache: true
 
@@ -29,8 +33,35 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # ⭐ این مرحله را اضافه کنید: ایجاد پوشه assets در صورتی که وجود ندارد
+      - name: Create assets directory if needed
+        run: |
+          mkdir -p assets
+          mkdir -p web
+
+      # ⭐ بیلد با base-href صحیح
       - name: Build web
-        run: flutter build web --release --base-href /${{ github.event.repository.name }}/
+        run: |
+          if [ "${{ github.event.repository.name }}" = "${{ github.repository_owner }}" ]; then
+            # اگر پروژه user page است (username.github.io)
+            flutter build web --release --base-href /
+          else
+            # اگر پروژه project page است
+            flutter build web --release --base-href /${{ github.event.repository.name }}/
+          fi
+
+      # ⭐ بررسی محتویات پوشه build/web
+      - name: List build/web contents
+        run: ls -la build/web/
+
+      # ⭐ اطمینان از وجود فایل index.html
+      - name: Verify index.html exists
+        run: |
+          if [ ! -f "build/web/index.html" ]; then
+            echo "ERROR: index.html not found in build/web/"
+            exit 1
+          fi
+          echo "✅ index.html found!"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -40,3 +71,5 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
           commit_message: "Deploy web build: ${{ github.sha }}"
+          # ⭐ این گزینه را اضافه کنید
+          exclude_assets: '.github,README.md'
