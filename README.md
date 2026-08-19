@@ -24,7 +24,7 @@ Download the latest stable builds for your platform:
 | <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" width="100"/> | Universal APK (Compressed) | [⬇️ Download](https://github.com/TheRealHizha/JavidNaman/releases/download/v1.0.0/JavidNaman.rar) |
 | <img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows" width="110"/> | Windows Version (Compressed) | [⬇️ Download](https://github.com/TheRealHizha/JavidNaman/releases/download/v1.0.0/javidnaman-windows.rar) |
 
-> ℹ️ **Note:** All releases are signed and verified. Check the [Releases page](https://github.com/H1ZHA/javidnaman/releases) for older versions and changelogs.
+> ℹ️ **Note:** All releases are signed and verified. Check the [Releases page](https://github.com/TheRealHizha/JavidNaman/releases) for older versions and changelogs.
 
 ---
 
