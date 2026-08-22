@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:math' as math;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -1706,12 +1705,15 @@ class _MartyrsListPageState extends State<MartyrsListPage> {
                       ),
                     Center(
                       child: martyr.imageUrl.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: martyr.imageUrl,
+                          ? Image.network(
+                              martyr.imageUrl,
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.center,
-                              placeholder: (context, url) => const SizedBox(width: 30, height: 30, child: CircularProgressIndicator(color: Color(0xFFE8B86D), strokeWidth: 2)),
-                              errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.white, size: 30),
+                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, color: Colors.white, size: 30),
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return const SizedBox(width: 30, height: 30, child: CircularProgressIndicator(color: Color(0xFFE8B86D), strokeWidth: 2));
+                              },
                             )
                           : const Icon(Icons.person, color: Colors.white, size: 30),
                     ),
@@ -1872,12 +1874,15 @@ class _DetailPageState extends State<DetailPage> with SingleTickerProviderStateM
                                     ),
                                   Center(
                                     child: widget.martyr.imageUrl.isNotEmpty
-                                        ? CachedNetworkImage(
-                                            imageUrl: widget.martyr.imageUrl,
+                                        ? Image.network(
+                                            widget.martyr.imageUrl,
                                             fit: BoxFit.scaleDown,
                                             alignment: Alignment.center,
-                                            placeholder: (context, url) => const SizedBox(width: 60, height: 60, child: CircularProgressIndicator(color: Color(0xFFE8B86D), strokeWidth: 2)),
-                                            errorWidget: (context, url, error) => const Icon(Icons.person, size: 60, color: Colors.grey),
+                                            errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, size: 60, color: Colors.grey),
+                                            loadingBuilder: (context, child, loadingProgress) {
+                                              if (loadingProgress == null) return child;
+                                              return const SizedBox(width: 60, height: 60, child: CircularProgressIndicator(color: Color(0xFFE8B86D), strokeWidth: 2));
+                                            },
                                           )
                                         : const Icon(Icons.person, size: 60, color: Colors.grey),
                                   ),
@@ -2339,7 +2344,6 @@ class _PoemsPageState extends State<PoemsPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // موضوع
           Text(
             "${loc.translate('poem_subject')} ${poem.subject}",
             style: const TextStyle(
